@@ -95,3 +95,35 @@
 [P3] Evento interno. Clock: 34
 [P3] Encerrando processo automaticamente.
 [P3] Evento interno. Clock: 35
+[P3] Evento interno. Clock: 1
+[P3] Recebido de P1 [4] -> Mensagem de P1
+[P3] Enviado para localhost/127.0.0.1:5002 [5] -> Mensagem de P3
+[P3] Recebido de P1 [6] -> Mensagem de P1
+[P3] Evento interno. Clock: 7
+[P3] Estado local: 2
+[P3] Marcador enviado para localhost/127.0.0.1:5001
+[P3] Marcador enviado para localhost/127.0.0.1:5002
+[P3] Marcador recebido de P2
+[P3] Marcador recebido de P1
+[P3] Evento interno. Clock: 10
+[P3] Recebido de P2 [12] -> Mensagem de P2
+[P3] Evento interno. Clock: 13
+[P3] Enviado para localhost/127.0.0.1:5001 [14] -> Mensagem de P3
+[P3] Recebido de P2 [15] -> Mensagem de P2
+[P3] Enviado para localhost/127.0.0.1:5002 [16] -> Mensagem de P3
+[P3] Evento interno. Clock: 17
+[P3] Enviado para localhost/127.0.0.1:5001 [18] -> Mensagem de P3
+[P3] Recebido de P2 [26] -> Mensagem de P2
+[P3] Evento interno. Clock: 27
+[P3] Recebido de P1 [28] -> Mensagem de P1
+[P3] Enviado para localhost/127.0.0.1:5002 [29] -> Mensagem de P3
+[P3] Recebido de P1 [30] -> Mensagem de P1
+[P3] Enviado para localhost/127.0.0.1:5002 [31] -> Mensagem de P3
+[P3] Recebido de P1 [32] -> Mensagem de P1
+[P3] Enviado para localhost/127.0.0.1:5002 [33] -> Mensagem de P3
+[P3] Recebido de P1 [36] -> Mensagem de P1
+[P3] Evento interno. Clock: 37
+[P3] Recebido de P1 [38] -> Mensagem de P1
+[P3] Enviado para localhost/127.0.0.1:5001 [39] -> Mensagem de P3
+[P3] Recebido de P1 [42] -> Mensagem de P1
+[P3] Encerrando processo automaticamente.
