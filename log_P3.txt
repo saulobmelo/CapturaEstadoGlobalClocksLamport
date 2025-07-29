@@ -1,3 +1,71 @@
 [P3] Evento interno. Clock: 119
 [P3] Evento interno. Clock: 120
 [P3] Evento interno. Clock: 121
+[P3] Evento interno. Clock: 122
+[P3] Evento interno. Clock: 123
+[P3] Evento interno. Clock: 124
+[P3] Evento interno. Clock: 125
+[P3] Evento interno. Clock: 126
+[P3] Evento interno. Clock: 127
+[P3] Evento interno. Clock: 128
+[P3] Evento interno. Clock: 129
+[P3] Evento interno. Clock: 130
+[P3] Evento interno. Clock: 131
+[P3] Evento interno. Clock: 132
+[P3] Evento interno. Clock: 133
+[P3] Evento interno. Clock: 134
+[P3] Evento interno. Clock: 135
+[P3] Evento interno. Clock: 136
+[P3] Evento interno. Clock: 137
+[P3] Evento interno. Clock: 138
+[P3] Evento interno. Clock: 139
+[P3] Evento interno. Clock: 140
+[P3] Evento interno. Clock: 141
+[P3] Evento interno. Clock: 142
+[P3] Evento interno. Clock: 143
+[P3] Evento interno. Clock: 144
+[P3] Evento interno. Clock: 145
+[P3] Evento interno. Clock: 146
+[P3] Evento interno. Clock: 147
+[P3] Evento interno. Clock: 148
+[P3] Evento interno. Clock: 149
+[P3] Evento interno. Clock: 150
+[P3] Evento interno. Clock: 151
+[P3] Evento interno. Clock: 152
+[P3] Evento interno. Clock: 153
+[P3] Recebido de P2 [153] -> Mensagem de P2
+[P3] Recebido de P1 [158] -> Mensagem de P1
+[P3] Enviado para localhost/127.0.0.1:5002 [159] -> Mensagem de P3
+[P3] Evento interno. Clock: 154
+[P3] Evento interno. Clock: 155
+[P3] Enviado para localhost/127.0.0.1:5002 [160] -> Mensagem de P3
+[P3] Recebido de P2 [161] -> Mensagem de P2
+[P3] Enviado para localhost/127.0.0.1:5002 [156] -> Mensagem de P3
+[P3] Evento interno. Clock: 162
+[P3] Estado local: 1
+[P3] Marcador enviado para localhost/127.0.0.1:5001
+[P3] Marcador enviado para localhost/127.0.0.1:5002
+[P3] Marcador recebido de P1
+[P3] Marcador recebido de P2
+[P3] Evento interno. Clock: 157
+[P3] Recebido de P1 [165] -> Mensagem de P1
+[P3] Recebido de P2 [166] -> Mensagem de P2
+[P3] Enviado para localhost/127.0.0.1:5002 [167] -> Mensagem de P3
+[P3] Recebido de P2 [175] -> Mensagem de P2
+[P3] Enviado para localhost/127.0.0.1:5001 [176] -> Mensagem de P3
+[P3] Enviado para localhost/127.0.0.1:5001 [158] -> Mensagem de P3
+[P3] Enviado para localhost/127.0.0.1:5001 [177] -> Mensagem de P3
+[P3] Enviado para localhost/127.0.0.1:5002 [159] -> Mensagem de P3
+[P3] Recebido de P2 [178] -> Mensagem de P2
+[P3] Recebido de P2 [179] -> Mensagem de P2
+[P3] Evento interno. Clock: 160
+[P3] Evento interno. Clock: 161
+[P3] Evento interno. Clock: 162
+[P3] Evento interno. Clock: 163
+[P3] Evento interno. Clock: 164
+[P3] Evento interno. Clock: 165
+[P3] Evento interno. Clock: 166
+[P3] Evento interno. Clock: 167
+[P3] Evento interno. Clock: 168
+[P3] Evento interno. Clock: 169
+[P3] Evento interno. Clock: 170

@@ -12,6 +12,7 @@ public class Processo {
     private final Map<InetSocketAddress, Boolean> canalRegistrado = new HashMap<>();
     private final List<String> mensagensEmTransito = new ArrayList<>();
     private final String logPath;
+    private volatile boolean executando = true;
 
     public Processo(String id, int porta, List<InetSocketAddress> vizinhos) {
         this.id = id;
@@ -25,8 +26,11 @@ public class Processo {
     }
 
     public void iniciar() {
-        new Thread(this::receber).start();
-        new Thread(this::gerarEventos).start();
+        Thread servidor = new Thread(this::receber);
+        Thread eventos = new Thread(this::gerarEventos);
+
+        servidor.start();
+        eventos.start();
 
         // Forçar snapshot no P1 após 15 segundos
         if (id.equals("P1")) {
@@ -45,6 +49,23 @@ public class Processo {
                 }
             }).start();
         }
+
+        // Encerrar o processo automaticamente após 1 minuto
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                executando = false;
+                registrarLog("[" + id + "] Encerrando processo automaticamente.");
+                System.out.println("[" + id + "] Encerrando processo automaticamente.");
+                try {
+                    servidor.join(1000);
+                    eventos.join(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.exit(0);
+            }
+        }, 60000); // 60 segundos
     }
 
     private void registrarLog(String msg) {
@@ -57,7 +78,7 @@ public class Processo {
 
     private void receber() {
         try (ServerSocket serverSocket = new ServerSocket(porta)) {
-            while (true) {
+            while (executando) {
                 Socket socket = serverSocket.accept();
                 ObjectInputStream entrada = new ObjectInputStream(socket.getInputStream());
                 Mensagem mensagem = (Mensagem) entrada.readObject();
@@ -96,13 +117,13 @@ public class Processo {
                 socket.close();
             }
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            if (executando) e.printStackTrace();
         }
     }
 
     private void gerarEventos() {
         Random random = new Random();
-        while (true) {
+        while (executando) {
             try {
                 Thread.sleep(3000 + random.nextInt(2000));
                 int tipo = random.nextInt(2);
