@@ -27,6 +27,24 @@ public class Processo {
     public void iniciar() {
         new Thread(this::receber).start();
         new Thread(this::gerarEventos).start();
+
+        // Forçar snapshot no P1 após 15 segundos
+        if (id.equals("P1")) {
+            new Thread(() -> {
+                try {
+                    Thread.sleep(15000);
+                    if (!emSnapshot) {
+                        emSnapshot = true;
+                        registrarLog("[" + id + "] Iniciando snapshot forçado pelo sistema.");
+                        System.out.println("[" + id + "] Iniciando snapshot forçado pelo sistema.");
+                        registrarLog("[" + id + "] Estado local: " + estadoLocal);
+                        enviarMarcadores();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        }
     }
 
     private void registrarLog(String msg) {
@@ -43,7 +61,16 @@ public class Processo {
                 Socket socket = serverSocket.accept();
                 ObjectInputStream entrada = new ObjectInputStream(socket.getInputStream());
                 Mensagem mensagem = (Mensagem) entrada.readObject();
-                InetSocketAddress origem = new InetSocketAddress(socket.getInetAddress(), socket.getPort());
+
+                // Identificar o vizinho real pela porta na string de origem
+                String origemStr = mensagem.getOrigem();
+                InetSocketAddress origem = null;
+                for (InetSocketAddress vizinho : vizinhos) {
+                    if (origemStr.contains(String.valueOf(vizinho.getPort()))) {
+                        origem = vizinho;
+                        break;
+                    }
+                }
 
                 if (mensagem.getTipo() == Mensagem.Tipo.MARCADOR) {
                     if (!emSnapshot) {
@@ -52,16 +79,17 @@ public class Processo {
                         registrarLog("[" + id + "] Estado local: " + estadoLocal);
                         enviarMarcadores();
                     }
-                    canalRegistrado.put(origem, true);
+                    if (origem != null) canalRegistrado.put(origem, true);
+                    registrarLog("[" + id + "] Marcador recebido de " + mensagem.getOrigem());
                 } else {
                     clock.update(mensagem.getTimestamp());
                     String logMsg = "[" + id + "] Recebido de " + mensagem.getOrigem() + " [" + clock.getTime() + "] -> " + mensagem.getConteudo();
                     System.out.println(logMsg);
                     registrarLog(logMsg);
 
-                    if (emSnapshot && !canalRegistrado.getOrDefault(origem, true)) {
+                    if (emSnapshot && origem != null && !canalRegistrado.getOrDefault(origem, true)) {
                         mensagensEmTransito.add(mensagem.getConteudo());
-                        registrarLog("[" + id + "] (Em trânsito) " + mensagem.getConteudo());
+                        registrarLog("[" + id + "] (Em trânsito de " + origem + ") " + mensagem.getConteudo());
                     }
                 }
 
