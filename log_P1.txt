@@ -84,3 +84,31 @@
 [P1] Evento interno. Clock: 176
 [P1] Evento interno. Clock: 177
 [P1] Evento interno. Clock: 178
+[P1] Evento interno. Clock: 1
+[P1] Recebido de P3 [3] -> Mensagem de P3
+[P1] Evento interno. Clock: 4
+[P1] Evento interno. Clock: 5
+[P1] Iniciando snapshot forçado pelo sistema.
+[P1] Estado local: 3
+[P1] Marcador enviado para localhost/127.0.0.1:5002
+[P1] Marcador recebido de P2
+[P1] Marcador enviado para localhost/127.0.0.1:5003
+[P1] Marcador recebido de P3
+[P1] Recebido de P3 [8] -> Mensagem de P3
+[P1] Enviado para localhost/127.0.0.1:5003 [9] -> Mensagem de P1
+[P1] Evento interno. Clock: 10
+[P1] Evento interno. Clock: 11
+[P1] Enviado para localhost/127.0.0.1:5002 [12] -> Mensagem de P1
+[P1] Enviado para localhost/127.0.0.1:5002 [13] -> Mensagem de P1
+[P1] Enviado para localhost/127.0.0.1:5003 [14] -> Mensagem de P1
+[P1] Recebido de P2 [18] -> Mensagem de P2
+[P1] Recebido de P3 [19] -> Mensagem de P3
+[P1] Evento interno. Clock: 20
+[P1] Recebido de P3 [21] -> Mensagem de P3
+[P1] Enviado para localhost/127.0.0.1:5002 [22] -> Mensagem de P1
+[P1] Recebido de P2 [25] -> Mensagem de P2
+[P1] Enviado para localhost/127.0.0.1:5002 [26] -> Mensagem de P1
+[P1] Recebido de P3 [31] -> Mensagem de P3
+[P1] Enviado para localhost/127.0.0.1:5003 [32] -> Mensagem de P1
+[P1] Enviado para localhost/127.0.0.1:5002 [33] -> Mensagem de P1
+[P1] Encerrando processo automaticamente.
