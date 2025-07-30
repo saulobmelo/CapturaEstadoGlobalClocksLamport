@@ -70,11 +70,11 @@ Exemplo:
     - Mensagens em trânsito (recebidas antes do marcador do canal).
 
 ## 📌 Observações
-Cada processo é executado em uma Thread separada, simulando paralelismo.
+- Cada processo é executado em uma Thread separada, simulando paralelismo.
 
-O snapshot é iniciado por apenas um processo e se propaga.
+- O snapshot é iniciado por apenas um processo e se propaga.
 
-O programa é finalizado automaticamente após 60 segundos.
+- O programa é finalizado automaticamente após 60 segundos.
 
 ## 👨‍💻 Autores
 - Saulo Melo
