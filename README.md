@@ -1,84 +1,90 @@
-# 🧠 Simulação de Captura de Estado Global com Clocks de Lamport (Java)
+# Simulação de Captura de Estado Global com Clocks de Lamport
 
-Este projeto é uma simulação da captura de estado global em um sistema distribuído, utilizando **Clocks de Lamport** e o algoritmo de **Chandy-Lamport**.
+## 📌 Descrição
 
-> 📚 Atividade desenvolvida para a disciplina de **Sistemas Distribuídos** – Curso de Análise e Desenvolvimento de Sistemas – IFBA
+Este projeto é uma simulação distribuída que implementa o algoritmo de **Chandy-Lamport** para **captura de estado global** em um sistema com 3 processos interligados, cada um utilizando **relógios lógicos de Lamport** para controle de causalidade. A comunicação entre processos é realizada por meio de **Java RMI**.
+
+---
+
+## 🎯 Objetivos
+
+- Simular comunicação distribuída entre processos com RMI
+- Controlar eventos com Relógios de Lamport
+- Implementar algoritmo de Captura de Estado Global (Chandy-Lamport)
+- Registrar logs de eventos com timestamps
+- Demonstrar mensagens em trânsito no momento da captura
+
+---
+
+## 📂 Estrutura do Projeto
+
+    src/
+    ├── InterfaceProcesso.java // Interface RMI dos processos
+    ├── Mensagem.java // Estrutura de mensagem com timestamp
+    ├── Estado.java // Estado local + mensagens em trânsito
+    ├── Registro.java // Log de eventos
+    ├── Processo.java // Implementação dos processos RMI
+    ├── Main.java // Inicialização dos processos e execução
+
 
 ---
 
 ## ⚙️ Tecnologias Utilizadas
 
-- Java 21
-- Sockets (TCP/IP)
-- Threads
-- Clocks de Lamport
+- Java 8+
+- Java RMI (Remote Method Invocation)
+- Threads para simulação de concorrência
+- Relógios de Lamport
 - Algoritmo de Chandy-Lamport
-- Logs em arquivos (`log_P1.txt`, `log_P2.txt`, etc.)
 
 ---
 
-## 🏗️ Estrutura do Projeto
+## 🔄 Como Funciona
 
-```
-├── Main.java
-├── Processo.java
-├── Mensagem.java
-├── Util.java
-├────────
-├── log_P1.txt
-├── log_P2.txt
-├── log_P3.txt
-```
+1. O programa inicia três processos (`P1`, `P2`, `P3`) conectados via RMI.
+2. Cada processo gera eventos internos e envia mensagens periodicamente.
+3. Após 10 segundos, o processo `P1` inicia a **captura de estado global**.
+4. Cada processo registra:
+   - Seu clock atual
+   - As mensagens em trânsito
+5. Após 30 segundos, o programa é encerrado automaticamente.
 
 ---
 
-## 🧪 Como Executar
+## 📋 Exemplo de Saída (Logs)
 
-1. **Clone o repositório** ou copie os arquivos para seu projeto.
-2. Compile com sua IDE ou via terminal.
-3. Execute `Main.java`.
+    [P1] Evento interno | Clock: 1
+    [P2] Enviou mensagem: Ping | Clock: 2
+    [P3] Recebeu [2] de P2: Ping | Clock: 3
+    [P1] Captura iniciada! | Clock: 5
+    [P2] Captura iniciada! | Clock: 6
+    [P3] Captura iniciada! | Clock: 6
+    Encerrando execução após 30 segundos...
 
-O programa:
-- Cria 3 processos (`P1`, `P2` e `P3`)
-- Simula envio e recebimento de mensagens entre eles
-- Gera eventos internos
-- Após alguns segundos, inicia o snapshot global
-- Captura o estado local e mensagens em trânsito
-- Finaliza automaticamente após 1 minuto
 
 ---
-
-## 📄 Logs
-
-Cada processo gera um log com seus eventos:
-
-Exemplo:
-```txt
-[P1] Evento interno. Clock: 11
-[P1] Enviado para localhost/127.0.0.1:5002 [13] -> Mensagem de P1
-```
-
-## 🧠 O que está sendo simulado
-- Eventos internos: Incremento do clock de Lamport.
-
-- Mensagens entre processos: Envio e recebimento com timestamps.
-
-- Snapshot Global:
-
-    - Estado local de cada processo (clock, contador, estado ON/OFF).
-
-    - Mensagens em trânsito (recebidas antes do marcador do canal).
 
 ## 📌 Observações
-- Cada processo é executado em uma Thread separada, simulando paralelismo.
 
-- O snapshot é iniciado por apenas um processo e se propaga.
+- O método `iniciarCaptura()` é protegido contra chamadas múltiplas.
+- O código pode ser facilmente expandido para mais processos.
+- A simulação usa apenas terminal, sem interface gráfica.
 
-- O programa é finalizado automaticamente após 60 segundos.
+---
+
+## 📦 Como Executar
+
+1. Compile todos os arquivos `.java`:
+   ```bash
+   javac *.java
+    java Main
+
+- Nota: Não é necessário executar rmiregistry separadamente, pois o Main.java já cria o registry localmente.
 
 ## 👨‍💻 Autores
+
 - Saulo Melo
-
 - Flávio Costa
-
 - Vinícius Xavier
+
+Trabalho desenvolvido para a disciplina de Sistemas Distribuídos, sob orientação do professor Felipe Silva — IFBA, campus Santo Antônio de Jesus.
