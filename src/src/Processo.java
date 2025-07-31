@@ -12,6 +12,7 @@ public class Processo {
     private final Map<InetSocketAddress, Boolean> canalRegistrado = new HashMap<>();
     private final List<String> mensagensEmTransito = new ArrayList<>();
     private final String logPath;
+    private final List<String> logBuffer = new ArrayList<>();
     private volatile boolean executando = true;
 
     public Processo(String id, int porta, List<InetSocketAddress> vizinhos) {
@@ -32,7 +33,6 @@ public class Processo {
         servidor.start();
         eventos.start();
 
-        // Forçar snapshot no P1 após 15 segundos
         if (id.equals("P1")) {
             new Thread(() -> {
                 try {
@@ -40,7 +40,6 @@ public class Processo {
                     if (!emSnapshot) {
                         emSnapshot = true;
                         registrarLog("[" + id + "] Iniciando snapshot forçado pelo sistema.");
-                        System.out.println("[" + id + "] Iniciando snapshot forçado pelo sistema.");
                         registrarLog("[" + id + "] Estado local: " + estadoLocal);
                         enviarMarcadores();
                     }
@@ -50,27 +49,40 @@ public class Processo {
             }).start();
         }
 
-        // Encerrar o processo automaticamente após 1 minuto
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
                 executando = false;
-                registrarLog("[" + id + "] Encerrando processo automaticamente.");
+
                 System.out.println("[" + id + "] Encerrando processo automaticamente.");
+                System.out.println("[" + id + "] Snapshot final -> Estado local: " + estadoLocal + ", Mensagens em trânsito: " + mensagensEmTransito);
+
+                logBuffer.add("[" + id + "] Encerrando processo automaticamente.");
+                logBuffer.add("[" + id + "] Snapshot final -> Estado local: " + estadoLocal + ", Mensagens em trânsito: " + mensagensEmTransito);
+
                 try {
                     servidor.join(1000);
                     eventos.join(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+
+                salvarRelatorioFinal();
                 System.exit(0);
             }
-        }, 60000); // 60 segundos
+        }, 60000);
     }
 
     private void registrarLog(String msg) {
-        try (PrintWriter log = new PrintWriter(new FileWriter(logPath, true))) {
-            log.println(msg);
+        System.out.println(msg);
+        logBuffer.add(msg);
+    }
+
+    private void salvarRelatorioFinal() {
+        try (PrintWriter log = new PrintWriter(new FileWriter(logPath, false))) {
+            for (String linha : logBuffer) {
+                log.println(linha);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -83,34 +95,32 @@ public class Processo {
                 ObjectInputStream entrada = new ObjectInputStream(socket.getInputStream());
                 Mensagem mensagem = (Mensagem) entrada.readObject();
 
-                // Identificar o vizinho real pela porta na string de origem
                 String origemStr = mensagem.getOrigem();
-                InetSocketAddress origem = null;
-                for (InetSocketAddress vizinho : vizinhos) {
-                    if (origemStr.contains(String.valueOf(vizinho.getPort()))) {
-                        origem = vizinho;
-                        break;
-                    }
-                }
+                InetSocketAddress origem = vizinhos.stream()
+                        .filter(v -> origemStr.contains(String.valueOf(v.getPort())))
+                        .findFirst().orElse(null);
 
                 if (mensagem.getTipo() == Mensagem.Tipo.MARCADOR) {
+                    registrarLog("[" + id + "] Marcador recebido de " + mensagem.getOrigem());
+
                     if (!emSnapshot) {
                         emSnapshot = true;
-                        System.out.println("[" + id + "] Iniciando captura de estado.");
+                        registrarLog("[" + id + "] Iniciando captura de estado.");
                         registrarLog("[" + id + "] Estado local: " + estadoLocal);
                         enviarMarcadores();
                     }
-                    if (origem != null) canalRegistrado.put(origem, true);
-                    registrarLog("[" + id + "] Marcador recebido de " + mensagem.getOrigem());
+
+                    if (origem != null && !canalRegistrado.getOrDefault(origem, false)) {
+                        canalRegistrado.put(origem, true);
+                    }
                 } else {
                     clock.update(mensagem.getTimestamp());
                     String logMsg = "[" + id + "] Recebido de " + mensagem.getOrigem() + " [" + clock.getTime() + "] -> " + mensagem.getConteudo();
-                    System.out.println(logMsg);
                     registrarLog(logMsg);
 
-                    if (emSnapshot && origem != null && !canalRegistrado.getOrDefault(origem, true)) {
+                    if (emSnapshot && origem != null && !canalRegistrado.getOrDefault(origem, false)) {
                         mensagensEmTransito.add(mensagem.getConteudo());
-                        registrarLog("[" + id + "] (Em trânsito de " + origem + ") " + mensagem.getConteudo());
+                        registrarLog("[" + id + "] Mensagem EM TRÂNSITO de " + origem + ": " + mensagem.getConteudo());
                     }
                 }
 
@@ -128,17 +138,15 @@ public class Processo {
                 Thread.sleep(3000 + random.nextInt(2000));
                 int tipo = random.nextInt(2);
 
-                if (tipo == 0) { // evento interno
+                if (tipo == 0) {
                     clock.increment();
                     estadoLocal++;
                     String logMsg = "[" + id + "] Evento interno. Clock: " + clock.getTime();
-                    System.out.println(logMsg);
                     registrarLog(logMsg);
-                } else { // envio de mensagem
+                } else {
                     InetSocketAddress destino = vizinhos.get(random.nextInt(vizinhos.size()));
                     enviarMensagem(destino, "Mensagem de " + id);
                 }
-
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -151,9 +159,7 @@ public class Processo {
             Mensagem msg = new Mensagem(Mensagem.Tipo.ENVIO, id, destino.toString(), clock.getTime(), conteudo);
             ObjectOutputStream saida = new ObjectOutputStream(socket.getOutputStream());
             saida.writeObject(msg);
-            String logMsg = "[" + id + "] Enviado para " + destino + " [" + clock.getTime() + "] -> " + conteudo;
-            System.out.println(logMsg);
-            registrarLog(logMsg);
+            registrarLog("[" + id + "] Enviado para " + destino + " [" + clock.getTime() + "] -> " + conteudo);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -166,9 +172,7 @@ public class Processo {
                 Mensagem marcador = new Mensagem(Mensagem.Tipo.MARCADOR, id, destino.toString(), clock.getTime(), "SNAPSHOT");
                 ObjectOutputStream saida = new ObjectOutputStream(socket.getOutputStream());
                 saida.writeObject(marcador);
-                String logMsg = "[" + id + "] Marcador enviado para " + destino;
-                System.out.println(logMsg);
-                registrarLog(logMsg);
+                registrarLog("[" + id + "] Marcador enviado para " + destino);
             } catch (IOException e) {
                 e.printStackTrace();
             }
